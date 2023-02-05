@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/quiz")
 public class QuizController {
 
-
-    private final QuizGameService quizGameService;
-    private final QuizGameAnswerService quizGameAnswerService;
-
     @Autowired
-    public QuizController(QuizGameService quizGameService, QuizGameAnswerService quizGameAnswerService) {
-        this.quizGameService = quizGameService;
-        this.quizGameAnswerService = quizGameAnswerService;
-    }
+    private QuizGameService quizGameService;
+    @Autowired
+    private QuizGameAnswerService quizGameAnswerService;
+
 
     @GetMapping
     public ResponseEntity<QuizBasic> getCurrentQuiz() {

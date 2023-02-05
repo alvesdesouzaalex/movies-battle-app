@@ -1,6 +1,5 @@
 package br.com.mb.moviesbattleapp.service.answer;
 
-import br.com.mb.moviesbattleapp.domain.movie.MovieDto;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizBasic;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizDto;
 import br.com.mb.moviesbattleapp.model.Movie;
@@ -12,10 +11,8 @@ import br.com.mb.moviesbattleapp.service.movie.MovieService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @Service

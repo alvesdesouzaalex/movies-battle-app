@@ -4,7 +4,6 @@ import br.com.mb.moviesbattleapp.client.OmdbClient;
 import br.com.mb.moviesbattleapp.domain.omdb.OmdbResponse;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.repository.MovieRepository;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -66,9 +65,9 @@ public class MovieService {
     private List<Integer> getMoviesIds() {
         Random rd = new Random();
         List<Integer> moviesIds = this.repository.findAllByType();
-        Integer firstMovieId = moviesIds.get(rd.nextInt(moviesIds.size() -1));
+        Integer firstMovieId = moviesIds.get(rd.nextInt(moviesIds.size() - 1));
         moviesIds.remove(firstMovieId);
-        Integer secondMovieId = moviesIds.get(rd.nextInt(moviesIds.size() -1));
+        Integer secondMovieId = moviesIds.get(rd.nextInt(moviesIds.size() - 1));
 
         return List.of(firstMovieId, secondMovieId);
     }
