@@ -1,4 +1,4 @@
-package br.com.mb.moviesbattleapp.domain.game;
+package br.com.mb.moviesbattleapp.domain.quiz;
 
 import lombok.Builder;
 import lombok.Getter;
