@@ -35,4 +35,7 @@ public class Quiz {
     @Column(name = "attempts_failed_map")
     private String attemptsFailedMap;
 
+    //Todo fazer a logica para pegar o usuario da sessao
+//    private User user;
+
 }
