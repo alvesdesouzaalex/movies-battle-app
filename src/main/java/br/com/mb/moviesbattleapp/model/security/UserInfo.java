@@ -1,8 +1,8 @@
 package br.com.mb.moviesbattleapp.model.security;
 
 
+import br.com.mb.moviesbattleapp.config.UserInfoUserDetails;
 import br.com.mb.moviesbattleapp.domain.credentials.UserInfoRequest;
-import br.com.mb.moviesbattleapp.domain.credentials.UserInfoResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String name;
     private String email;
     private String password;
@@ -33,5 +33,13 @@ public class UserInfo {
                 .build();
     }
 
+    public static UserInfo of(UserInfoUserDetails request) {
+        return UserInfo.builder()
+                .email(request.getEmail())
+                .name(request.getUsername())
+                .password(request.getPassword())
+                .id(request.getId())
+                .build();
+    }
 
 }

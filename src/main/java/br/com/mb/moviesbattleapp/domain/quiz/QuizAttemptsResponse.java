@@ -1,18 +1,16 @@
 package br.com.mb.moviesbattleapp.domain.quiz;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
-public class QuizBasic {
-    protected Integer id;
-    protected List<QuizDto> movies;
+public class QuizAttemptsResponse {
+    private Integer failedAttempts;
+    private Integer maxAttempts;
+    private String status;
 }

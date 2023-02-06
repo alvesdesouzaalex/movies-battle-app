@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class MovieService {
@@ -48,8 +49,7 @@ public class MovieService {
 
     }
 
-    @Async
-    public void loadMovies() {
+    private void loadMovies() {
         Random rd = new Random();
         rd.nextInt(movies.size() - 1);
         var name = movies.get(rd.nextInt(movies.size() - 1));
@@ -57,9 +57,10 @@ public class MovieService {
         this.saveMovies(movies);
     }
 
-    public List<Movie> getCurrentBattle() {
+    @Async
+    public CompletableFuture<List<Movie>> getCurrentBattle() {
         this.loadMovies();
-        return this.repository.findAllById(this.getMoviesIds());
+        return CompletableFuture.completedFuture(this.repository.findAllById(this.getMoviesIds()));
     }
 
     private List<Integer> getMoviesIds() {

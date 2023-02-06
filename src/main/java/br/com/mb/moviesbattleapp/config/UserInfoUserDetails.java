@@ -17,7 +17,13 @@ public class UserInfoUserDetails implements UserDetails {
     private String password;
     private List<GrantedAuthority> authorities;
 
+    private Integer id;
+
+    private String email;
+
     public UserInfoUserDetails(UserInfo userInfo) {
+        email = userInfo.getEmail();
+        id = userInfo.getId();
         name = userInfo.getName();
         password = userInfo.getPassword();
         authorities = Arrays.stream(userInfo.getRoles().split(","))
@@ -58,5 +64,13 @@ public class UserInfoUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }
