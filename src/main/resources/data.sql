@@ -1,0 +1,3 @@
+insert into user_info(id, name, email, password, roles) values(1, 'user1', 'user1@email.com', '$2a$10$IF9/UEe9YGsXFanjsHnx4.MXg1nrjTBOsohlzjGHy27qxyGxmJAsu', 'ROLE_ADMIN');
+insert into user_info(id, name, email, password, roles) values(2, 'user2', 'user2@email.com', '$2a$10$IF9/UEe9YGsXFanjsHnx4.MXg1nrjTBOsohlzjGHy27qxyGxmJAsu', 'ROLE_ADMIN');
+insert into user_info(id, name, email, password, roles) values(3, 'user3', 'user3@email.com', '$2a$10$IF9/UEe9YGsXFanjsHnx4.MXg1nrjTBOsohlzjGHy27qxyGxmJAsu', 'ROLE_ADMIN');

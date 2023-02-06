@@ -39,6 +39,7 @@ public class AuthenticationController {
     }
 
 
+    //TODO separar em outro controller
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/new")
     public ResponseEntity<UserInfoResponse> addNewUser(@RequestBody UserInfoRequest request) {

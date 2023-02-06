@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -52,9 +51,7 @@ public class QuizService {
 
             try {
                 moviesBattleList =  currentBattle.get();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
             moviesBattleListDto = this.getMoviesToBattle(moviesBattleList);
@@ -72,10 +69,12 @@ public class QuizService {
             quiz = this.save(quiz);
 
         } else {
+            //TODO verificar pois nao eta trazando os filmes correntes
             moviesBattleListDto = getMoviesToBattle(quiz.getMovies());
         }
 
-        return QuizResponse.builder()
+        return QuizResponse
+                .builder() //NOSONAR
                 .id(quiz.getId())
                 .movies(moviesBattleListDto).build();
     }
