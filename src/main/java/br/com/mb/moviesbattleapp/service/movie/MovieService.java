@@ -19,7 +19,6 @@ public class MovieService {
     @Autowired
     private OmdbClient omdbClient;
 
-
     //TODO temporario
     List<String> movies = List.of("Batman", "Matrix", "Poderoso", "Avatar", "Star Wars", "Top",
             "Transformers", "Missão", "Game", "Superman", "Avengers", "ultimo", "comeco");
@@ -42,7 +41,7 @@ public class MovieService {
                             .title(searchDto.getTitle())
                             .type(searchDto.getType())
                             .year(searchDto.getYear())
-                            .rate(new BigDecimal(rate))
+                            .rate(BigDecimal.valueOf(rate))
                             .build();
                     this.repository.save(movie);
                 });
@@ -53,8 +52,8 @@ public class MovieService {
         Random rd = new Random();
         rd.nextInt(movies.size() - 1);
         var name = movies.get(rd.nextInt(movies.size() - 1));
-        OmdbResponse movies = this.omdbClient.getMovies(name, 1);
-        this.saveMovies(movies);
+        OmdbResponse moviesList = this.omdbClient.getMovies(name, 1);
+        this.saveMovies(moviesList);
     }
 
     @Async
