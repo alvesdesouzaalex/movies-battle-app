@@ -33,9 +33,6 @@ public class Quiz {
     private Integer score;
     private BigDecimal rate;
 
-    @Column(name = "attempts_failed_map")
-    private String attemptsFailedMap;
-
     @OneToOne
     private UserInfo userInfo;
 

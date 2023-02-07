@@ -15,8 +15,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class QuizService {
@@ -39,31 +37,26 @@ public class QuizService {
     }
 
     public QuizBasic getCurrentQuiz() {
+        this.movieService.loadMovies();
         List<Movie> moviesBattleList;
         List<QuizDto> moviesBattleListDto;
 
+        List<Movie> currentBattle = this.movieService.getABattle();
 
-        CompletableFuture<List<Movie>> currentBattle = this.movieService.getCurrentBattle();
         var userInfo = userService.getLoggedUser();
         Quiz quiz = this.repository.findByUserInfoAndOpenedIsTrue(userInfo);
 
         if (null == quiz) {
 
-            try {
-                moviesBattleList =  currentBattle.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-            moviesBattleListDto = this.getMoviesToBattle(moviesBattleList);
+            moviesBattleListDto = this.getMoviesToBattle(currentBattle);
 
             quiz = Quiz.builder()
                     .rate(new BigDecimal(BigInteger.ZERO))
                     .score(0)
                     .userInfo(userInfo)
                     .opened(true)
-                    .attemptsFailedMap("")
                     .attempts(0)
-                    .movies(moviesBattleList)
+                    .movies(currentBattle)
                     .build();
 
             quiz = this.save(quiz);

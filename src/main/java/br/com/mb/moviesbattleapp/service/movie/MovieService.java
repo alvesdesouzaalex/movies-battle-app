@@ -4,14 +4,15 @@ import br.com.mb.moviesbattleapp.client.OmdbClient;
 import br.com.mb.moviesbattleapp.domain.omdb.OmdbResponse;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.repository.MovieRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class MovieService {
@@ -27,7 +28,26 @@ public class MovieService {
     @Autowired
     private MovieRepository repository;
 
+
+    @Async
+    public void loadMovies() {
+        Random rd = new Random();
+        var name = movies.get(rd.nextInt(movies.size() - 1));
+        OmdbResponse moviesList = this.omdbClient.getMovies(name, 1);
+        this.saveMovies(moviesList);
+    }
+
+    public Movie findByImdbID(String imdbID) {
+        return this.repository.findByImdbID(imdbID);
+    }
+
+    public List<Movie> getABattle() {
+        List<Integer> moviesIds = this.getMoviesIds();
+        return this.repository.findAllById(moviesIds);
+    }
+
     //TODO simplificar
+    @Transactional
     private void saveMovies(OmdbResponse response) {
         response.getSearchDtos()
                 .parallelStream()
@@ -35,7 +55,6 @@ public class MovieService {
                     Random rd = new Random();
                     var rate = rd.nextDouble(11);
                     var movie = Movie.builder()
-                            .id(1)
                             .imdbID(searchDto.getImdbID())
                             .poster(searchDto.getPoster())
                             .title(searchDto.getTitle())
@@ -43,23 +62,13 @@ public class MovieService {
                             .year(searchDto.getYear())
                             .rate(BigDecimal.valueOf(rate))
                             .build();
-                    this.repository.save(movie);
+                    try {
+                        this.repository.saveAndFlush(movie);
+                    } catch (DataIntegrityViolationException e) {
+                        System.out.println(e);
+                    }
                 });
 
-    }
-
-    private void loadMovies() {
-        Random rd = new Random();
-        rd.nextInt(movies.size() - 1);
-        var name = movies.get(rd.nextInt(movies.size() - 1));
-        OmdbResponse moviesList = this.omdbClient.getMovies(name, 1);
-        this.saveMovies(moviesList);
-    }
-
-    @Async
-    public CompletableFuture<List<Movie>> getCurrentBattle() {
-        this.loadMovies();
-        return CompletableFuture.completedFuture(this.repository.findAllById(this.getMoviesIds()));
     }
 
     private List<Integer> getMoviesIds() {
@@ -72,7 +81,4 @@ public class MovieService {
         return List.of(firstMovieId, secondMovieId);
     }
 
-    public Movie findByImdbID(String imdbID) {
-        return this.repository.findByImdbID(imdbID);
-    }
 }

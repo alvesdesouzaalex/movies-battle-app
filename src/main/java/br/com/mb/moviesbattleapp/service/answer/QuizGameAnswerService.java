@@ -78,7 +78,6 @@ public class QuizGameAnswerService {
         Quiz quiz = Quiz.builder()
                 .id(saved.getId())
                 .attempts(attempts)
-                .attemptsFailedMap(attemptsFailed)
                 .rate(quizDtoWinner.getRate())
                 .movies(List.of(movieWinner, movieLoser))
                 .opened(score == 0)
