@@ -3,24 +3,17 @@ package br.com.mb.moviesbattleapp.service.answer;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizAttemptsResponse;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizBasic;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizDto;
-import br.com.mb.moviesbattleapp.exception.BusinessException;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.model.Quiz;
-import br.com.mb.moviesbattleapp.model.quiz.AttemptsConstants;
-import br.com.mb.moviesbattleapp.model.quiz.QuizAttempts;
-import br.com.mb.moviesbattleapp.model.security.UserInfo;
 import br.com.mb.moviesbattleapp.service.movie.MovieService;
 import br.com.mb.moviesbattleapp.service.quiz.QuizService;
 import br.com.mb.moviesbattleapp.service.user.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
-import static br.com.mb.moviesbattleapp.exception.MessageErrors.UNAUTHORIZED_USER;
+import java.util.Comparator;
+import java.util.Objects;
 
 @Service
 public class QuizGameAnswerService {
