@@ -6,10 +6,14 @@ import br.com.mb.moviesbattleapp.domain.quiz.QuizResponse;
 import br.com.mb.moviesbattleapp.exception.BusinessException;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.model.Quiz;
+import br.com.mb.moviesbattleapp.model.security.UserInfo;
 import br.com.mb.moviesbattleapp.repository.QuizRepository;
 import br.com.mb.moviesbattleapp.service.movie.MovieService;
 import br.com.mb.moviesbattleapp.service.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,6 +26,8 @@ import static br.com.mb.moviesbattleapp.exception.MessageErrors.QUIZ_NOT_FOUND;
 @Service
 public class QuizService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(QuizService.class);
+
     @Autowired
     private MovieService movieService;
 
@@ -33,6 +39,10 @@ public class QuizService {
 
     public Quiz findBYid(Integer id) {
         return repository.findById(id).orElseThrow(() -> new BusinessException(QUIZ_NOT_FOUND));
+    }
+
+    public List<Quiz> findAllByPrayer(UserInfo userInfo) {
+        return this.repository.findAllByUserInfo(userInfo);
     }
 
     public Quiz save(Quiz quiz) {
@@ -57,7 +67,12 @@ public class QuizService {
                     .movies(currentBattle)
                     .build();
 
-            quiz = this.save(quiz);
+            try {
+                quiz = this.save(quiz);
+            } catch (DataIntegrityViolationException e) {
+                LOGGER.error("DUPLICATED QUIZ AND CONTINUE TO ANOTHER GAME");
+                getCurrentQuiz();
+            }
 
         }
 
@@ -72,7 +87,7 @@ public class QuizService {
         List<QuizDto> quizDtoList = new ArrayList<>();
         movies.forEach(movie -> {
             quizDtoList.add(QuizDto.of(movie));
-            System.out.println(movie);
+            LOGGER.info(movie.toString());
         });
         return quizDtoList;
     }

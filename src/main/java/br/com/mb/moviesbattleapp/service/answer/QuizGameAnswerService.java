@@ -7,6 +7,7 @@ import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.model.Quiz;
 import br.com.mb.moviesbattleapp.service.movie.MovieService;
 import br.com.mb.moviesbattleapp.service.quiz.QuizService;
+import br.com.mb.moviesbattleapp.service.ranking.RankingService;
 import br.com.mb.moviesbattleapp.service.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class QuizGameAnswerService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RankingService rankingService;
+
     @Transactional
     public QuizAttemptsResponse answerQuiz(QuizBasic request) {
 
@@ -35,13 +39,15 @@ public class QuizGameAnswerService {
 
         Quiz saved = this.quizService.findBYid(request.getId());
         int attempts = saved.getAttempts();
-        attempts++;
 
         this.userService.validatePrayer(saved.getUserInfo());
 
         if (Objects.equals(movieWinner.getRate(), quizDtoWinner.getRate()) && Boolean.TRUE.equals(saved.getOpened())) {
             saved.setScore(1);
             this.inactivateCurrentQuiz(saved);
+            this.rankingService.recordRanking(saved.getUserInfo());
+            this.rankingService.generateRanking();
+
             return QuizAttemptsResponse.builder()
                     .failedAttempts(attempts)
                     .status("You win. Try a new Quiz.")
@@ -50,6 +56,7 @@ public class QuizGameAnswerService {
 
         }
 
+        attempts++;
         if (attempts >= 3 || Boolean.FALSE.equals(saved.getOpened())) {
             this.inactivateCurrentQuiz(saved);
             return QuizAttemptsResponse.builder()

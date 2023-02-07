@@ -4,7 +4,10 @@ import br.com.mb.moviesbattleapp.client.OmdbClient;
 import br.com.mb.moviesbattleapp.domain.omdb.OmdbResponse;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.repository.MovieRepository;
+import br.com.mb.moviesbattleapp.util.Utils;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Async;
@@ -17,13 +20,13 @@ import java.util.Random;
 @Service
 public class MovieService {
 
-    @Autowired
-    private OmdbClient omdbClient;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MovieService.class);
 
-    //TODO temporario
-    List<String> movies = List.of("Batman", "Matrix", "Poderoso", "Avatar", "Star Wars", "Top",
+    private static final List<String> movies = List.of("Batman", "Matrix", "Poderoso", "Avatar", "Star Wars", "Top",
             "Transformers", "Missão", "Game", "Superman", "Avengers", "ultimo", "comeco");
 
+    @Autowired
+    private OmdbClient omdbClient;
 
     @Autowired
     private MovieRepository repository;
@@ -31,7 +34,7 @@ public class MovieService {
 
     @Async
     public void loadMovies() {
-        Random rd = new Random();
+        Random rd = Utils.secureRandom();
         var name = movies.get(rd.nextInt(movies.size() - 1));
         OmdbResponse moviesList = this.omdbClient.getMovies(name, 1);
         this.saveMovies(moviesList);
@@ -46,13 +49,12 @@ public class MovieService {
         return this.repository.findAllById(moviesIds);
     }
 
-    //TODO simplificar
     @Transactional
     private void saveMovies(OmdbResponse response) {
         response.getSearchDtos()
                 .parallelStream()
                 .forEach(searchDto -> {
-                    Random rd = new Random();
+                    Random rd = Utils.secureRandom();
                     var rate = rd.nextDouble(10);
                     var movie = Movie.builder()
                             .imdbID(searchDto.getImdbID())
@@ -65,14 +67,14 @@ public class MovieService {
                     try {
                         this.repository.saveAndFlush(movie);
                     } catch (DataIntegrityViolationException e) {
-                        System.out.println(e);
+                        LOGGER.error(e.getMessage());
                     }
                 });
 
     }
 
     private List<Integer> getMoviesIds() {
-        Random rd = new Random();
+        Random rd = Utils.secureRandom();
         List<Integer> moviesIds = this.repository.findAllByType();
         Integer firstMovieId = moviesIds.get(rd.nextInt(moviesIds.size() - 1));
         moviesIds.remove(firstMovieId);
