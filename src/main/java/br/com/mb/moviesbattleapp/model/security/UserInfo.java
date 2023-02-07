@@ -4,15 +4,13 @@ package br.com.mb.moviesbattleapp.model.security;
 import br.com.mb.moviesbattleapp.config.UserInfoUserDetails;
 import br.com.mb.moviesbattleapp.domain.credentials.UserInfoRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"password", "roles"})
 @Entity
 @Table(name = "user_info")
 public class UserInfo {

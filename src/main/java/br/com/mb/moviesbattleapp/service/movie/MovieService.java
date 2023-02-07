@@ -53,7 +53,7 @@ public class MovieService {
                 .parallelStream()
                 .forEach(searchDto -> {
                     Random rd = new Random();
-                    var rate = rd.nextDouble(11);
+                    var rate = rd.nextDouble(10);
                     var movie = Movie.builder()
                             .imdbID(searchDto.getImdbID())
                             .poster(searchDto.getPoster())

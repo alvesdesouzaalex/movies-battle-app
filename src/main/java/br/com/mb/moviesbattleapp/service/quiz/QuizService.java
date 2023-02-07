@@ -3,6 +3,7 @@ package br.com.mb.moviesbattleapp.service.quiz;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizBasic;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizDto;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizResponse;
+import br.com.mb.moviesbattleapp.exception.BusinessException;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.model.Quiz;
 import br.com.mb.moviesbattleapp.repository.QuizRepository;
@@ -15,6 +16,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.mb.moviesbattleapp.exception.MessageErrors.QUIZ_NOT_FOUND;
 
 @Service
 public class QuizService {
@@ -29,7 +32,7 @@ public class QuizService {
     private UserService userService;
 
     public Quiz findBYid(Integer id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
+        return repository.findById(id).orElseThrow(() -> new BusinessException(QUIZ_NOT_FOUND));
     }
 
     public Quiz save(Quiz quiz) {
@@ -38,18 +41,13 @@ public class QuizService {
 
     public QuizBasic getCurrentQuiz() {
         this.movieService.loadMovies();
-        List<Movie> moviesBattleList;
-        List<QuizDto> moviesBattleListDto;
-
-        List<Movie> currentBattle = this.movieService.getABattle();
 
         var userInfo = userService.getLoggedUser();
         Quiz quiz = this.repository.findByUserInfoAndOpenedIsTrue(userInfo);
 
         if (null == quiz) {
 
-            moviesBattleListDto = this.getMoviesToBattle(currentBattle);
-
+            List<Movie> currentBattle = this.movieService.getABattle();
             quiz = Quiz.builder()
                     .rate(new BigDecimal(BigInteger.ZERO))
                     .score(0)
@@ -61,20 +59,21 @@ public class QuizService {
 
             quiz = this.save(quiz);
 
-        } else {
-            //TODO verificar pois nao eta trazando os filmes correntes
-            moviesBattleListDto = getMoviesToBattle(quiz.getMovies());
         }
 
         return QuizResponse
                 .builder() //NOSONAR
                 .id(quiz.getId())
-                .movies(moviesBattleListDto).build();
+                .movies(this.getMoviesToBattle(quiz.getMovies()))
+                .build();
     }
 
     private List<QuizDto> getMoviesToBattle(List<Movie> movies) {
         List<QuizDto> quizDtoList = new ArrayList<>();
-        movies.forEach(movie ->  { quizDtoList.add(QuizDto.of(movie)); System.out.println(movie); });
+        movies.forEach(movie -> {
+            quizDtoList.add(QuizDto.of(movie));
+            System.out.println(movie);
+        });
         return quizDtoList;
     }
 
