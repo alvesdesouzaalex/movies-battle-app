@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "omdbapi", url = "https://www.omdbapi.com")
 public interface OmdbClient {
 
-    @GetMapping(value = "?apikey=&type=movie", produces = "application/json")
+    @GetMapping(value = "?apikey=30591db2&type=movie", produces = "application/json")
     OmdbResponse getMovies(@RequestParam(name = "s") String name, @RequestParam(name = "page") Integer page);
 }
 

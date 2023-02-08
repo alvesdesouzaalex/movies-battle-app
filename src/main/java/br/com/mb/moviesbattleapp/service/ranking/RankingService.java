@@ -1,5 +1,6 @@
 package br.com.mb.moviesbattleapp.service.ranking;
 
+import br.com.mb.moviesbattleapp.domain.ranking.RankingResponse;
 import br.com.mb.moviesbattleapp.model.Quiz;
 import br.com.mb.moviesbattleapp.model.Ranking;
 import br.com.mb.moviesbattleapp.model.security.UserInfo;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,8 +37,9 @@ public class RankingService {
     }
 
     @Async
-    public void generateRanking(){
+    public void generateRanking() {
         List<Ranking> rankings = this.repository.findAllBy();
+        rankings.sort(Comparator.comparing(Ranking::getQuantityCorrect).reversed());
         AtomicInteger position = new AtomicInteger(1);
         rankings.forEach(ranking -> {
             ranking.setPosition(position.get());
@@ -75,4 +79,18 @@ public class RankingService {
                 .sum();
     }
 
+    public List<RankingResponse> getRanking() {
+        List<Ranking> rankings = this.repository.findAll();
+        rankings.sort(Comparator.comparing(Ranking::getPosition));
+
+        List<RankingResponse> rankingResponses = new ArrayList<>();
+        rankings.forEach(ranking ->
+                rankingResponses.add(RankingResponse.builder()
+                        .position(ranking.getPosition())
+                        .points(ranking.getQuantityCorrect())
+                        .prayer(ranking.getPrayer().getName())
+                        .build())
+        );
+        return rankingResponses;
+    }
 }

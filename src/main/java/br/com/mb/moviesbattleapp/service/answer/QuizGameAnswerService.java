@@ -66,10 +66,10 @@ public class QuizGameAnswerService {
                     .build();
         }
 
-
-        saved = this.quizService.save(saved);
+        saved.setAttempts(attempts);
+        this.quizService.save(saved);
         return QuizAttemptsResponse.builder()
-                .failedAttempts(saved.getAttempts())
+                .failedAttempts(attempts)
                 .status("You lose, try again.")
                 .maxAttempts(3)
                 .build();
