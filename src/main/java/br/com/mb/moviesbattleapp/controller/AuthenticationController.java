@@ -2,19 +2,22 @@ package br.com.mb.moviesbattleapp.controller;
 
 import br.com.mb.moviesbattleapp.domain.credentials.AuthRequestDto;
 import br.com.mb.moviesbattleapp.domain.credentials.TokenDto;
-import br.com.mb.moviesbattleapp.domain.credentials.UserInfoRequest;
-import br.com.mb.moviesbattleapp.domain.credentials.UserInfoResponse;
 import br.com.mb.moviesbattleapp.service.security.JwtService;
 import br.com.mb.moviesbattleapp.service.user.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Auth endpoint")
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
@@ -27,6 +30,7 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
 
+    @Operation(summary = "Method to make login")
     @PostMapping("/login")
     public ResponseEntity<TokenDto> authentication(@RequestBody AuthRequestDto authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
@@ -40,11 +44,11 @@ public class AuthenticationController {
 
 
     //TODO separar em outro controller
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/new")
-    public ResponseEntity<UserInfoResponse> addNewUser(@RequestBody UserInfoRequest request) {
-        var result = service.createUser(request);
-        return ResponseEntity.ok(result);
-    }
+//    @ResponseStatus(HttpStatus.CREATED)
+//    @PostMapping("/new")
+//    public ResponseEntity<UserInfoResponse> addNewUser(@RequestBody UserInfoRequest request) {
+//        var result = service.createUser(request);
+//        return ResponseEntity.ok(result);
+//    }
 
 }

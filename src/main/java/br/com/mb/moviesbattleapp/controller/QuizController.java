@@ -22,14 +22,14 @@ public class QuizController {
     private QuizGameAnswerService quizGameAnswerService;
 
 
-    @Operation(summary = "Endpoint to find Current Quiz by logged User")
+    @Operation(summary = "Method to find Current Quiz by logged User")
     @GetMapping
     public ResponseEntity<QuizBasic> getCurrentQuiz() {
         var response = this.quizService.getCurrentQuiz();
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Endpoint to answer Current Quiz by logged User")
+    @Operation(summary = "Method to answer Current Quiz by logged User")
     @PostMapping
     public ResponseEntity<QuizAttemptsResponse> answerQuiz(@RequestBody QuizRequest request) {
         var response = this.quizGameAnswerService.answerQuiz(request);
