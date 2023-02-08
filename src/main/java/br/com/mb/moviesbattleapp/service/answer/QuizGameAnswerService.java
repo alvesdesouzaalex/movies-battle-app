@@ -37,7 +37,7 @@ public class QuizGameAnswerService {
         QuizDto quizDtoWinner = request.getMovies().stream().max(Comparator.comparing(QuizDto::getRate)).orElseThrow(RuntimeException::new);
         Movie movieWinner = this.movieService.findByImdbID(quizDtoWinner.getImdbID());
 
-        Quiz saved = this.quizService.findBYid(request.getId());
+        Quiz saved = this.quizService.findById(request.getId());
         int attempts = saved.getAttempts();
 
         this.userService.validatePrayer(saved.getUserInfo());

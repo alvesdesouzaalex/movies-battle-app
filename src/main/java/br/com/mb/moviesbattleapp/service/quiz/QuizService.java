@@ -37,7 +37,7 @@ public class QuizService {
     @Autowired
     private UserService userService;
 
-    public Quiz findBYid(Integer id) {
+    public Quiz findById(Integer id) {
         return repository.findById(id).orElseThrow(() -> new BusinessException(QUIZ_NOT_FOUND));
     }
 
