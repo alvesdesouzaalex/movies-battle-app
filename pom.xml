@@ -196,6 +196,7 @@
                         <exclude>br/com/mb/moviesbattleapp/exceptions/**/*</exclude>
                         <exclude>br/com/mb/moviesbattleapp/repository/**/*</exclude>
                         <exclude>br/com/mb/moviesbattleapp/security/**/*</exclude>
+                        <exclude>br/com/mb/moviesbattleapp/util/**/*</exclude>
                         <!--						<exclude>br/com/mb/moviesbattleapp/controller/**/*</exclude>-->
 
                     </excludes>

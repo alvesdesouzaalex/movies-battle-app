@@ -12,6 +12,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
@@ -39,13 +42,52 @@ public class MovieServiceTest {
 
     @Test
     public void findMovie_Success() {
-        Movie movie = Movie.builder().imdbID("imdv87956").build();
+        Movie movie = getMovie(1);
         when(repository.findByImdbID(movie.getImdbID())).thenReturn(movie);
         Movie response = service.findByImdbID(movie.getImdbID());
 
         assertThat(response, notNullValue());
         assertThat(response, hasProperty("imdbID", equalTo(movie.getImdbID())));
 
+    }
+
+    @Test
+    public void findBattle_Success() {
+        List<Movie> movies = List.of(getMovie(1), getMovie(2));
+        List<Integer> ids = new ArrayList<>();
+        ids.add(1);
+        ids.add(2);
+        ids.add(3);
+
+        List<Integer> idsResult = List.of(1,2);
+
+        when(repository.findAllByType()).thenReturn(ids);
+        when(repository.findAllById(idsResult)).thenReturn(movies);
+
+        List<Movie> response = service.getABattle();
+
+        assertThat(response, notNullValue());
+        assertThat(response.size(), comparesEqualTo(movies.size()));
+
+    }
+
+
+//    @Test
+//    public void loadMovies_Success() {
+//        Movie movie = getMovie(1);
+//
+//        when(repository.findByImdbID(movie.getImdbID())).thenReturn(movie);
+//        Movie response = service.findByImdbID(movie.getImdbID());
+//
+//        assertThat(response, notNullValue());
+//        assertThat(response, hasProperty("imdbID", equalTo(movie.getImdbID())));
+//
+//    }
+
+    private Movie getMovie(Integer id) {
+        return Movie.builder()
+                .id(id)
+                .imdbID("imdv87956").build();
     }
 
 }
