@@ -14,8 +14,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @Service
 public class MovieService {
@@ -76,11 +78,14 @@ public class MovieService {
     private List<Integer> getMoviesIds() {
         Random rd = Utils.secureRandom();
         List<Integer> moviesIds = this.repository.findAllByType();
-        Integer firstMovieId = moviesIds.get(rd.nextInt(moviesIds.size() - 1));
-        moviesIds.remove(firstMovieId);
-        Integer secondMovieId = moviesIds.get(rd.nextInt(moviesIds.size() - 1));
+        Set<Integer> ids = new HashSet<>();
 
-        return List.of(firstMovieId, secondMovieId);
+        while (ids.size() != 2) {
+            int index = rd.nextInt(moviesIds.size() - 1);
+            ids.add(moviesIds.get(index));
+        }
+
+        return ids.stream().toList();
     }
 
 }

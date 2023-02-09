@@ -71,19 +71,6 @@ public class MovieServiceTest {
 
     }
 
-
-//    @Test
-//    public void loadMovies_Success() {
-//        Movie movie = getMovie(1);
-//
-//        when(repository.findByImdbID(movie.getImdbID())).thenReturn(movie);
-//        Movie response = service.findByImdbID(movie.getImdbID());
-//
-//        assertThat(response, notNullValue());
-//        assertThat(response, hasProperty("imdbID", equalTo(movie.getImdbID())));
-//
-//    }
-
     private Movie getMovie(Integer id) {
         return Movie.builder()
                 .id(id)
