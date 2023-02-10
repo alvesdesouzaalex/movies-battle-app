@@ -22,11 +22,10 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 public class MovieServiceTest {
 
-
     @TestConfiguration
     static class MovieServiceTestConfiguration {
         @Bean
-        public MovieService userService() {
+        public MovieService movieService() {
             return new MovieService();
         }
     }

@@ -40,7 +40,7 @@ public class QuizGameAnswerService {
         Quiz saved = this.quizService.findById(request.getId());
         int attempts = saved.getAttempts();
 
-        this.userService.validatePrayer(saved.getUserInfo());
+        this.userService.validatePlayer(saved.getUserInfo());
 
         if (Objects.equals(movieWinner.getRate(), quizDtoWinner.getRate()) && Boolean.TRUE.equals(saved.getOpened())) {
             saved.setScore(1);

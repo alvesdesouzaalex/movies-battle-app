@@ -7,9 +7,7 @@ import java.math.BigDecimal;
 
 public class MoviesFixture {
 
-    public static Movie movie(String title, String imdbID, String poster) {
-        int id = Utils.secureRandom().nextInt(20);
-        double rate = Utils.secureRandom().nextDouble(10);
+    public static Movie movie(String title, String imdbID, String poster, double rate, Integer id) {
 
         return Movie.builder()
                 .id(id)

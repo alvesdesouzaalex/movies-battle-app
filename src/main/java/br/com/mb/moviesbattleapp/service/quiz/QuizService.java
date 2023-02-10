@@ -41,7 +41,7 @@ public class QuizService {
         return repository.findById(id).orElseThrow(() -> new BusinessException(QUIZ_NOT_FOUND));
     }
 
-    public List<Quiz> findAllByPrayer(UserInfo userInfo) {
+    public List<Quiz> findAllByPlayer(UserInfo userInfo) {
         return this.repository.findAllByUserInfo(userInfo);
     }
 

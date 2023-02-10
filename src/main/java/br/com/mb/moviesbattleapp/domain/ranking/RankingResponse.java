@@ -10,5 +10,5 @@ import lombok.Setter;
 public class RankingResponse {
     private Integer position;
     private Integer points;
-    private String prayer;
+    private String player;
 }

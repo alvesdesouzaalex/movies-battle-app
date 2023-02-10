@@ -193,7 +193,7 @@
                         <exclude>br/com/mb/moviesbattleapp/config/**/*</exclude>
                         <exclude>br/com/mb/moviesbattleapp/domain/**/*</exclude>
                         <exclude>br/com/mb/moviesbattleapp/model/**/*</exclude>
-                        <exclude>br/com/mb/moviesbattleapp/exceptions/**/*</exclude>
+                        <exclude>br/com/mb/moviesbattleapp/exception/**/*</exclude>
                         <exclude>br/com/mb/moviesbattleapp/repository/**/*</exclude>
                         <exclude>br/com/mb/moviesbattleapp/security/**/*</exclude>
                         <exclude>br/com/mb/moviesbattleapp/util/**/*</exclude>

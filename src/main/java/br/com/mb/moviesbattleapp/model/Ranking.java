@@ -29,7 +29,7 @@ public class Ranking {
     private Integer quantityCorrect;
 
     @OneToOne
-    private UserInfo prayer;
+    private UserInfo player;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "ranking_quiz", joinColumns = @JoinColumn(name = "ranking_id"),

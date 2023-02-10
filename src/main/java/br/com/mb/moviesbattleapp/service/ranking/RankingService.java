@@ -25,8 +25,8 @@ public class RankingService {
     @Autowired
     private QuizService quizService;
 
-    public Ranking findByPrayer(UserInfo userInfo) {
-        return this.repository.findByPrayer(userInfo);
+    public Ranking findByPlayer(UserInfo userInfo) {
+        return this.repository.findByPlayer(userInfo);
     }
 
     @Transactional
@@ -49,13 +49,13 @@ public class RankingService {
     }
 
     private Ranking makeRanking(UserInfo userInfo) {
-        Ranking ranking = this.findByPrayer(userInfo);
-        List<Quiz> quizzes = this.quizService.findAllByPrayer(userInfo);
+        Ranking ranking = this.findByPlayer(userInfo);
+        List<Quiz> quizzes = this.quizService.findAllByPlayer(userInfo);
 
         if (null == ranking) {
             return Ranking.builder()
                     .position(0)
-                    .prayer(userInfo)
+                    .player(userInfo)
                     .quantityCorrect(this.quantityCorrect(quizzes))
                     .quizzes(quizzes)
                     .build();
@@ -67,7 +67,7 @@ public class RankingService {
     }
 
     private void save(Ranking ranking) {
-        this.repository.saveAndFlush(ranking);
+        this.repository.save(ranking);
     }
 
     private Integer quantityCorrect(List<Quiz> quizzes) {
@@ -88,7 +88,7 @@ public class RankingService {
                 rankingResponses.add(RankingResponse.builder()
                         .position(ranking.getPosition())
                         .points(ranking.getQuantityCorrect())
-                        .prayer(ranking.getPrayer().getName())
+                        .player(ranking.getPlayer().getName())
                         .build())
         );
         return rankingResponses;

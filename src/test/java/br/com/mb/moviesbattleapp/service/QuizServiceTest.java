@@ -37,7 +37,7 @@ public class QuizServiceTest {
     @TestConfiguration
     static class QuizServiceTestConfiguration {
         @Bean
-        public QuizService userService() {
+        public QuizService quizService() {
             return new QuizService();
         }
     }
@@ -73,12 +73,12 @@ public class QuizServiceTest {
     }
 
     @Test
-    public void findAllByPrayer_Success() {
+    public void findAllByPlayer_Success() {
         UserInfo userInfo = UserInfo.builder().name("user1").build();
         Optional<Quiz> quiz = Optional.of(getQuiz(1, new ArrayList<>(), 0, true, BigDecimal.valueOf(0), 0));
         List<Quiz> quizList = List.of(quiz.get());
         when(repository.findAllByUserInfo(userInfo)).thenReturn(quizList);
-        List<Quiz> response = service.findAllByPrayer(userInfo);
+        List<Quiz> response = service.findAllByPlayer(userInfo);
 
         assertThat(response, notNullValue());
         assertThat(response.size(), equalTo(1));
@@ -88,12 +88,15 @@ public class QuizServiceTest {
     @Test
     public void getCurrentNewQuiz_Success() {
 
-        UserInfo userInfo = userInfo();
+        UserInfo userInfo = userInfo("user1");
         when(userService.getLoggedUser()).thenReturn(userInfo);
         when(repository.findByUserInfoAndOpenedIsTrue(userInfo)).thenReturn(null);
 
-        List<Movie> currentBattle = List.of(movie("title1", "imdb1", "poster1"),
-                movie("title2", "imdb2", "poster2"), movie("title3", "imdb3", "poster3"));
+        List<Movie> currentBattle = List.of(
+                movie("title1", "imdb1", "poster1", 2.2, 1),
+                movie("title2", "imdb2", "poster2", 5.89, 2),
+                movie("title3", "imdb3", "poster3", 7.7, 3)
+        );
 
         when(movieService.getABattle()).thenReturn(currentBattle);
 

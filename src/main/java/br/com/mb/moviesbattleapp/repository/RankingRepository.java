@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface RankingRepository extends JpaRepository<Ranking, Integer> {
 
-    Ranking findByPrayer(UserInfo prayer);
+    Ranking findByPlayer(UserInfo player);
 
     @Query(name = "select r.* from ranking r order by r.quantity_correct desc;", nativeQuery = true)
     List<Ranking> findAllBy();

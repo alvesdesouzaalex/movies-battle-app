@@ -35,7 +35,7 @@ public class UserService {
         return UserInfo.of(userDetails);
     }
 
-    public void validatePrayer(UserInfo userInfo) {
+    public void validatePlayer(UserInfo userInfo) {
         UserInfo loggedUser = this.getLoggedUser();
         if (!loggedUser.equals(userInfo)) {
             throw new BusinessException(UNAUTHORIZED_USER);
