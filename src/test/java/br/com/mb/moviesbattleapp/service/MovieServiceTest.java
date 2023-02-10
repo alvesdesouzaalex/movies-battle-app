@@ -1,15 +1,20 @@
 package br.com.mb.moviesbattleapp.service;
 
 import br.com.mb.moviesbattleapp.client.OmdbClient;
+import br.com.mb.moviesbattleapp.domain.omdb.OmdbResponse;
+import br.com.mb.moviesbattleapp.domain.omdb.SearchDto;
+import br.com.mb.moviesbattleapp.fixture.SearchDtoFixture;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.repository.MovieRepository;
 import br.com.mb.moviesbattleapp.service.movie.MovieService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -17,7 +22,8 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 public class MovieServiceTest {
@@ -40,6 +46,38 @@ public class MovieServiceTest {
     OmdbClient omdbClient;
 
     @Test
+    public void loadMovies() {
+
+        OmdbResponse omdbResponse = new OmdbResponse();
+        omdbResponse.setResponse(true);
+        omdbResponse.setTotalResults("5");
+        omdbResponse.setSearchDtos(this.getSearchDtoList());
+
+        when(omdbClient.getMovies(Mockito.any(), anyInt())).thenReturn(omdbResponse);
+
+        service.loadMovies();
+        verify(repository, times(5)).saveAndFlush(any(Movie.class));
+
+    }
+
+    @Test
+    public void loadMovies_DataIntegrityViolationException() {
+
+        OmdbResponse omdbResponse = new OmdbResponse();
+        omdbResponse.setResponse(true);
+        omdbResponse.setTotalResults("5");
+        omdbResponse.setSearchDtos(this.getSearchDtoList());
+
+        when(omdbClient.getMovies(Mockito.any(), anyInt())).thenReturn(omdbResponse);
+        when(repository.saveAndFlush(any())).thenThrow(DataIntegrityViolationException.class);
+
+        service.loadMovies();
+        verify(repository, times(5)).saveAndFlush(any(Movie.class));
+
+    }
+
+
+    @Test
     public void findMovie_Success() {
         Movie movie = getMovie(1);
         when(repository.findByImdbID(movie.getImdbID())).thenReturn(movie);
@@ -58,7 +96,7 @@ public class MovieServiceTest {
         ids.add(2);
         ids.add(3);
 
-        List<Integer> idsResult = List.of(1,2);
+        List<Integer> idsResult = List.of(1, 2);
 
         when(repository.findAllByType()).thenReturn(ids);
         when(repository.findAllById(idsResult)).thenReturn(movies);
@@ -74,6 +112,16 @@ public class MovieServiceTest {
         return Movie.builder()
                 .id(id)
                 .imdbID("imdv87956").build();
+    }
+
+    private List<SearchDto> getSearchDtoList() {
+        List<SearchDto> searchDtoList = new ArrayList<>();
+        searchDtoList.add(SearchDtoFixture.of("imdbId1", "poster1", "title1", "2007"));
+        searchDtoList.add(SearchDtoFixture.of("imdbId1", "poster1", "title1", "2007"));
+        searchDtoList.add(SearchDtoFixture.of("imdbId1", "poster1", "title1", "2007"));
+        searchDtoList.add(SearchDtoFixture.of("imdbId1", "poster1", "title1", "2007"));
+        searchDtoList.add(SearchDtoFixture.of("imdbId1", "poster1", "title1", "2007"));
+        return searchDtoList;
     }
 
 }

@@ -72,7 +72,11 @@ public class RankingServiceTest {
         Ranking ranking = RankingFixture.ranking(1, 2, userInfo);
         when(repository.findByPlayer(userInfo)).thenReturn(ranking);
 
-        List<Quiz> quizzes = List.of(QuizFixture.getQuiz(1, new ArrayList<>(), 0, true, BigDecimal.valueOf(8), 7));
+        List<Quiz> quizzes = List.of(
+                QuizFixture.getQuiz(1, new ArrayList<>(), 0, true, BigDecimal.valueOf(8), 7),
+                QuizFixture.getQuiz(2, new ArrayList<>(), 3, false, BigDecimal.valueOf(8), 7)
+
+        );
         when(quizService.findAllByPlayer(userInfo)).thenReturn(quizzes);
 
         service.recordRanking(userInfo);

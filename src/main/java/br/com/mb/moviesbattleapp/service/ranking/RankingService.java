@@ -32,7 +32,6 @@ public class RankingService {
     @Transactional
     public void recordRanking(UserInfo userInfo) {
         Ranking ranking = this.makeRanking(userInfo);
-        assert ranking != null;
         this.save(ranking);
     }
 
