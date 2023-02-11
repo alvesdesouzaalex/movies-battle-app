@@ -35,9 +35,15 @@ public class QuizGameAnswerService {
     public QuizAttemptsResponse answerQuiz(QuizBasic request) {
 
         QuizDto quizDtoWinner = request.getMovies().stream().max(Comparator.comparing(QuizDto::getRate)).orElseThrow(RuntimeException::new);
-        Movie movieWinner = this.movieService.findByImdbID(quizDtoWinner.getImdbID());
+//        Movie movieWinner = this.movieService.findByImdbID(quizDtoWinner.getImdbID());
 
         Quiz saved = this.quizService.findById(request.getId());
+        Movie movieWinner = saved.getMovies()
+                .stream().filter(movie -> Objects.equals(movie.getImdbID(), quizDtoWinner.getImdbID()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No movie found"));
+
+
         int attempts = saved.getAttempts();
 
         this.userService.validatePlayer(saved.getUserInfo());
@@ -45,8 +51,7 @@ public class QuizGameAnswerService {
         if (Objects.equals(movieWinner.getRate(), quizDtoWinner.getRate()) && Boolean.TRUE.equals(saved.getOpened())) {
             saved.setScore(1);
             this.inactivateCurrentQuiz(saved);
-            this.rankingService.recordRanking(saved.getUserInfo());
-            this.rankingService.generateRanking();
+            this.processRanking(saved);
 
             return QuizAttemptsResponse.builder()
                     .failedAttempts(attempts)
@@ -68,11 +73,17 @@ public class QuizGameAnswerService {
 
         saved.setAttempts(attempts);
         this.quizService.save(saved);
+        this.processRanking(saved);
         return QuizAttemptsResponse.builder()
                 .failedAttempts(attempts)
                 .status("You lose, try again.")
                 .maxAttempts(3)
                 .build();
+    }
+
+    private void processRanking(Quiz saved) {
+        this.rankingService.recordRanking(saved.getUserInfo());
+        this.rankingService.generateRanking();
     }
 
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -38,7 +39,7 @@ public class RankingService {
     @Async
     public void generateRanking() {
         List<Ranking> rankings = this.repository.findAllBy();
-        rankings.sort(Comparator.comparing(Ranking::getQuantityCorrect).reversed());
+        rankings.sort(Comparator.comparing(Ranking::getPoints).reversed());
         AtomicInteger position = new AtomicInteger(1);
         rankings.forEach(ranking -> {
             ranking.setPosition(position.get());
@@ -55,21 +56,43 @@ public class RankingService {
             return Ranking.builder()
                     .position(0)
                     .player(userInfo)
-                    .quantityCorrect(this.quantityCorrect(quizzes))
+                    .totalHits(this.getTotalHits(quizzes))
+                    .totalQuizzes(quizzes.size())
                     .quizzes(quizzes)
+                    .points(this.calculateTotalPoints(quizzes))
                     .build();
 
         }
 
-        ranking.setQuantityCorrect(this.quantityCorrect(quizzes));
+        ranking.setTotalHits(this.getTotalHits(quizzes));
+        ranking.setPoints(this.calculateTotalPoints(quizzes));
+        ranking.setTotalQuizzes(quizzes.size());
         return ranking;
+    }
+
+    private BigDecimal calculateTotalPoints(List<Quiz> quizzes) {
+        int totalQuizzes = quizzes.size();
+        BigDecimal qtdTotalQuizzes = BigDecimal.valueOf(totalQuizzes);
+        BigDecimal totalPoints = qtdTotalQuizzes.multiply(this.hitPercentages(quizzes));
+        System.out.println(totalPoints);
+        return totalPoints;
+    }
+
+    private BigDecimal hitPercentages(List<Quiz> quizzes) {
+        int totalQuizzes = quizzes.size();
+        int totalHits = this.getTotalHits(quizzes);
+
+        double result = (totalHits/(double) totalQuizzes) * 100;
+
+        return BigDecimal.valueOf(result);
+
     }
 
     private void save(Ranking ranking) {
         this.repository.save(ranking);
     }
 
-    private Integer quantityCorrect(List<Quiz> quizzes) {
+    private Integer getTotalHits(List<Quiz> quizzes) {
         return quizzes.stream()
                 .filter(quiz -> !quiz.getOpened())
                 .map(Quiz::getScore)
@@ -86,7 +109,7 @@ public class RankingService {
         rankings.forEach(ranking ->
                 rankingResponses.add(RankingResponse.builder()
                         .position(ranking.getPosition())
-                        .points(ranking.getQuantityCorrect())
+                        .points(ranking.getPoints())
                         .player(ranking.getPlayer().getName())
                         .build())
         );

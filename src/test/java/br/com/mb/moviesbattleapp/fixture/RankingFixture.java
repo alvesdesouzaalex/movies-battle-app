@@ -11,7 +11,7 @@ public class RankingFixture {
         return Ranking.builder()
                 .id(id)
                 .position(position)
-                .quantityCorrect(quantityCorrect)
+                .totalHits(quantityCorrect)
                 .player(userInfo)
                 .build();
     }

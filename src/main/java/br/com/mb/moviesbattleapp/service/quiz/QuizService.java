@@ -50,7 +50,7 @@ public class QuizService {
     }
 
     public QuizBasic getCurrentQuiz() {
-        this.movieService.loadMovies();
+        this.loadMovies();
 
         var userInfo = userService.getLoggedUser();
         Quiz quiz = this.repository.findByUserInfoAndOpenedIsTrue(userInfo);
@@ -90,6 +90,10 @@ public class QuizService {
             LOGGER.info(movie.toString());
         });
         return quizDtoList;
+    }
+
+    private void loadMovies() {
+        this.movieService.loadMovies();
     }
 
 }

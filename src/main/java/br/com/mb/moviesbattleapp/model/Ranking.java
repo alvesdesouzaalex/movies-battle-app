@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -25,8 +26,13 @@ public class Ranking {
 
     private Integer position;
 
-    @Column(name = "quantity_correct")
-    private Integer quantityCorrect;
+    @Column(name = "total_hits")
+    private Integer totalHits;
+
+    @Column(name = "total_quizzes")
+    private Integer totalQuizzes;
+
+    private BigDecimal points;
 
     @OneToOne
     private UserInfo player;

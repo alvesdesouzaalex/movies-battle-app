@@ -5,21 +5,18 @@ import br.com.mb.moviesbattleapp.domain.omdb.OmdbResponse;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.repository.MovieRepository;
 import br.com.mb.moviesbattleapp.util.Utils;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
-@Service
+import java.util.*;
+@Component
 public class MovieService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MovieService.class);
@@ -34,12 +31,23 @@ public class MovieService {
     private MovieRepository repository;
 
 
+    @PostConstruct
+    public void init() {
+        this.loadMovies();
+    }
     @Async
     public void loadMovies() {
-        Random rd = Utils.secureRandom();
-        var name = movies.get(rd.nextInt(movies.size() - 1));
-        OmdbResponse moviesList = this.omdbClient.getMovies(name, 1);
-        this.saveMovies(moviesList);
+
+        Integer total = repository.countAllByType("movie");
+        if (total > 0) {
+            return;
+        }
+
+        movies.forEach(name -> {
+            OmdbResponse moviesList = this.omdbClient.getMovies(name, 1);
+            this.saveMovies(moviesList);
+        });
+
     }
 
     public Movie findByImdbID(String imdbID) {
@@ -53,6 +61,7 @@ public class MovieService {
 
     @Transactional
     private void saveMovies(OmdbResponse response) {
+        Set<Movie> moviesToSave = new HashSet<>();
         response.getSearchDtos()
                 .parallelStream()
                 .forEach(searchDto -> {
@@ -66,13 +75,17 @@ public class MovieService {
                             .year(searchDto.getYear())
                             .rate(BigDecimal.valueOf(rate))
                             .build();
-                    try {
-                        this.repository.saveAndFlush(movie);
-                    } catch (DataIntegrityViolationException e) {
-                        LOGGER.error(e.getMessage());
-                    }
+
+                    moviesToSave.add(movie);
+
                 });
 
+
+        try {
+            this.repository.saveAllAndFlush(moviesToSave);
+        } catch (DataIntegrityViolationException e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     private List<Integer> getMoviesIds() {

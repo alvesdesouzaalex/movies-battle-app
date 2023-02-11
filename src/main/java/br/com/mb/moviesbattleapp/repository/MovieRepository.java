@@ -16,4 +16,7 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
     List<Movie> findAllById(List<Integer> ids);
 
     Movie findByImdbID(String imdbId);
+
+    Integer countAllByType(String type);
+
 }
