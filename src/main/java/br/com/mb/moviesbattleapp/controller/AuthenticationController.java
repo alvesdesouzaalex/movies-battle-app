@@ -3,7 +3,6 @@ package br.com.mb.moviesbattleapp.controller;
 import br.com.mb.moviesbattleapp.domain.credentials.AuthRequestDto;
 import br.com.mb.moviesbattleapp.domain.credentials.TokenDto;
 import br.com.mb.moviesbattleapp.service.security.JwtService;
-import br.com.mb.moviesbattleapp.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,6 @@ public class AuthenticationController {
     @Autowired
     private JwtService jwtService;
     @Autowired
-    private UserService service;
-    @Autowired
     private AuthenticationManager authenticationManager;
 
 
@@ -41,14 +38,5 @@ public class AuthenticationController {
             throw new UsernameNotFoundException("Invalid credentials!");
         }
     }
-
-
-    //TODO separar em outro controller
-//    @ResponseStatus(HttpStatus.CREATED)
-//    @PostMapping("/new")
-//    public ResponseEntity<UserInfoResponse> addNewUser(@RequestBody UserInfoRequest request) {
-//        var result = service.createUser(request);
-//        return ResponseEntity.ok(result);
-//    }
 
 }
