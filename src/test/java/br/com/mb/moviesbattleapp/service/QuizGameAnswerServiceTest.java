@@ -130,5 +130,30 @@ public class QuizGameAnswerServiceTest {
         assertThat(response, hasProperty("maxAttempts", equalTo(3)));
     }
 
+    @Test
+    public void answerQuizFinishedGameAndClosed_Success() {
+
+        QuizBasic quizBasic = QuizRequestFixture.quizRequest();
+
+        QuizDto quizDtoWinner = quizBasic.getMovies()
+                .stream().max(Comparator.comparing(QuizDto::getRate))
+                .orElseThrow(RuntimeException::new);
+
+        Movie movieWinner = MoviesFixture.movie("title1", quizDtoWinner.getImdbID(), "poster1", 8, 1);
+
+        when(movieService.findByImdbID(quizDtoWinner.getImdbID())).thenReturn(movieWinner);
+
+
+        Quiz saved = QuizFixture.getQuiz(1, List.of(movieWinner), 2, false, BigDecimal.valueOf(8), 7);
+        when(quizService.findById(quizBasic.getId())).thenReturn(saved);
+
+        QuizAttemptsResponse response = service.answerQuiz(quizBasic);
+
+        assertThat(response, notNullValue());
+        assertThat(response, hasProperty("status", equalTo("Game over, ask for a new game")));
+        assertThat(response, hasProperty("failedAttempts", equalTo(3)));
+        assertThat(response, hasProperty("maxAttempts", equalTo(3)));
+    }
+
 
 }
