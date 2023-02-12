@@ -53,13 +53,13 @@ public class RankingServiceTest {
 
         UserInfo userInfo = UserInfoFixture.userInfo("user1");
 
-        Ranking ranking = RankingFixture.ranking(1, 7, userInfo);
+        Ranking ranking = RankingFixture.ranking(1, 7, userInfo, BigDecimal.valueOf(700));
         when(repository.findByPlayer(userInfo)).thenReturn(ranking);
 
         Ranking response = service.findByPlayer(userInfo);
 
         assertThat(response, notNullValue());
-        assertThat(response, hasProperty("quantityCorrect", equalTo(7)));
+        assertThat(response, hasProperty("points", equalTo(BigDecimal.valueOf(700))));
         assertThat(response, hasProperty("position", equalTo(1)));
     }
 
@@ -69,7 +69,7 @@ public class RankingServiceTest {
 
         UserInfo userInfo = UserInfoFixture.userInfo("user1");
 
-        Ranking ranking = RankingFixture.ranking(1, 2, userInfo);
+        Ranking ranking = RankingFixture.ranking(1, 2, userInfo, BigDecimal.valueOf(700));
         when(repository.findByPlayer(userInfo)).thenReturn(ranking);
 
         List<Quiz> quizzes = List.of(
@@ -107,8 +107,8 @@ public class RankingServiceTest {
         UserInfo user2 = UserInfoFixture.userInfo("user2");
 
         List<Ranking> rankings = new ArrayList<>();
-        rankings.add(RankingFixture.ranking(1, 7, user1));
-        rankings.add(RankingFixture.ranking(2, 3, user2));
+        rankings.add(RankingFixture.ranking(1, 7, user1, BigDecimal.valueOf(700)));
+        rankings.add(RankingFixture.ranking(2, 3, user2, BigDecimal.valueOf(500)));
 
         when(repository.findAll()).thenReturn(rankings);
 
@@ -116,11 +116,11 @@ public class RankingServiceTest {
         assertThat(response, notNullValue());
         assertThat(response.get(0), hasProperty("player", equalTo(user1.getName())));
         assertThat(response.get(0), hasProperty("position", equalTo(1)));
-        assertThat(response.get(0), hasProperty("points", equalTo(7)));
+        assertThat(response.get(0), hasProperty("points", equalTo(BigDecimal.valueOf(700))));
 
         assertThat(response.get(1), hasProperty("player", equalTo(user2.getName())));
         assertThat(response.get(1), hasProperty("position", equalTo(2)));
-        assertThat(response.get(1), hasProperty("points", equalTo(3)));
+        assertThat(response.get(1), hasProperty("points", equalTo(BigDecimal.valueOf(500))));
 
     }
 
@@ -132,8 +132,8 @@ public class RankingServiceTest {
         UserInfo user2 = UserInfoFixture.userInfo("user2");
 
         List<Ranking> rankings = new ArrayList<>();
-        rankings.add(RankingFixture.ranking(1, 7, user1));
-        rankings.add(RankingFixture.ranking(2, 3, user2));
+        rankings.add(RankingFixture.ranking(1, 7, user1, BigDecimal.valueOf(700)));
+        rankings.add(RankingFixture.ranking(2, 3, user2, BigDecimal.valueOf(300)));
 
         when(repository.findAllBy()).thenReturn(rankings);
 

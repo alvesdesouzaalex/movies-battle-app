@@ -21,7 +21,7 @@ public class MovieService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MovieService.class);
 
-    private static final List<String> movies = List.of("Batman", "Matrix", "Poderoso", "Avatar", "Star Wars", "Top",
+    public static final List<String> movies = List.of("Batman", "Matrix", "Poderoso", "Avatar", "Star Wars", "Top",
             "Transformers", "Missão", "Game", "Superman", "Avengers", "ultimo", "comeco");
 
     @Autowired
@@ -33,10 +33,10 @@ public class MovieService {
 
     @PostConstruct
     public void init() {
-        this.loadMovies();
+        this.loadMovies(movies);
     }
     @Async
-    public void loadMovies() {
+    public void loadMovies(List<String> movies) {
 
         Integer total = repository.countAllByType("movie");
         if (total > 0) {
@@ -62,6 +62,9 @@ public class MovieService {
     @Transactional
     private void saveMovies(OmdbResponse response) {
         Set<Movie> moviesToSave = new HashSet<>();
+        if (response == null) {
+            return;
+        }
         response.getSearchDtos()
                 .parallelStream()
                 .forEach(searchDto -> {

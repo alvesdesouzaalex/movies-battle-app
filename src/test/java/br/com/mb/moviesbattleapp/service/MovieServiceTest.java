@@ -53,10 +53,12 @@ public class MovieServiceTest {
         omdbResponse.setTotalResults("5");
         omdbResponse.setSearchDtos(this.getSearchDtoList());
 
+        List<String> moviesList = new ArrayList<>() ;
+        moviesList.add("movie1");
         when(omdbClient.getMovies(Mockito.any(), anyInt())).thenReturn(omdbResponse);
 
-        service.loadMovies();
-        verify(repository, times(5)).saveAndFlush(any(Movie.class));
+        service.loadMovies(moviesList);
+        verify(repository, times(1)).saveAllAndFlush(any());
 
     }
 
@@ -68,11 +70,15 @@ public class MovieServiceTest {
         omdbResponse.setTotalResults("5");
         omdbResponse.setSearchDtos(this.getSearchDtoList());
 
+        List<String> moviesList = new ArrayList<>() ;
+        moviesList.add("movie1");
+
+        when(repository.countAllByType("movie")).thenReturn(0);
         when(omdbClient.getMovies(Mockito.any(), anyInt())).thenReturn(omdbResponse);
         when(repository.saveAndFlush(any())).thenThrow(DataIntegrityViolationException.class);
 
-        service.loadMovies();
-        verify(repository, times(5)).saveAndFlush(any(Movie.class));
+        service.loadMovies(moviesList);
+        verify(repository, times(1)).saveAllAndFlush(any());
 
     }
 
@@ -116,10 +122,6 @@ public class MovieServiceTest {
 
     private List<SearchDto> getSearchDtoList() {
         List<SearchDto> searchDtoList = new ArrayList<>();
-        searchDtoList.add(SearchDtoFixture.of("imdbId1", "poster1", "title1", "2007"));
-        searchDtoList.add(SearchDtoFixture.of("imdbId1", "poster1", "title1", "2007"));
-        searchDtoList.add(SearchDtoFixture.of("imdbId1", "poster1", "title1", "2007"));
-        searchDtoList.add(SearchDtoFixture.of("imdbId1", "poster1", "title1", "2007"));
         searchDtoList.add(SearchDtoFixture.of("imdbId1", "poster1", "title1", "2007"));
         return searchDtoList;
     }

@@ -93,7 +93,7 @@ public class QuizService {
     }
 
     private void loadMovies() {
-        this.movieService.loadMovies();
+        this.movieService.loadMovies(MovieService.movies);
     }
 
 }
