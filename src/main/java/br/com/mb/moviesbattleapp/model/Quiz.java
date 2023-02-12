@@ -23,7 +23,7 @@ public class Quiz {
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "quiz_movie", joinColumns = @JoinColumn(name = "quiz_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private List<Movie> movies;

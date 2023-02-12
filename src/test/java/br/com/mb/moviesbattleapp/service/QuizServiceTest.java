@@ -2,6 +2,7 @@ package br.com.mb.moviesbattleapp.service;
 
 import br.com.mb.moviesbattleapp.domain.quiz.QuizBasic;
 import br.com.mb.moviesbattleapp.exception.BusinessException;
+import br.com.mb.moviesbattleapp.fixture.QuizFixture;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.model.Quiz;
 import br.com.mb.moviesbattleapp.model.security.UserInfo;
@@ -99,6 +100,15 @@ public class QuizServiceTest {
         );
 
         when(movieService.getABattle()).thenReturn(currentBattle);
+
+        List<Movie> oldsBattle = List.of(
+                movie("title4", "imdb4", "poster4", 2.25, 4),
+                movie("title5", "imdb5", "poster5", 6.89, 5),
+                movie("title6", "imdb6", "poster6", 8.7, 6)
+        );
+
+
+        when(repository.findAllByUserInfo(userInfo)).thenReturn(List.of(getQuiz(2, oldsBattle, 2, false, BigDecimal.valueOf(100), 5)));
 
         Quiz quiz = getQuiz(1, currentBattle, 0, true, BigDecimal.valueOf(0), 0);
 

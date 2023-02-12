@@ -8,9 +8,8 @@ import java.util.List;
 
 public interface QuizRepository extends JpaRepository<Quiz, Integer> {
 
-    Quiz findByUserInfo(UserInfo userInfo);
-
     Quiz findByUserInfoAndOpenedIsTrue(UserInfo userInfo);
 
     List<Quiz> findAllByUserInfo(UserInfo userInfo);
+
 }

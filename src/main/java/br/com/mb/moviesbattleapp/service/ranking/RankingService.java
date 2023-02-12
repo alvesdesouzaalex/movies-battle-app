@@ -73,16 +73,14 @@ public class RankingService {
     private BigDecimal calculateTotalPoints(List<Quiz> quizzes) {
         int totalQuizzes = quizzes.size();
         BigDecimal qtdTotalQuizzes = BigDecimal.valueOf(totalQuizzes);
-        BigDecimal totalPoints = qtdTotalQuizzes.multiply(this.hitPercentages(quizzes));
-        System.out.println(totalPoints);
-        return totalPoints;
+        return qtdTotalQuizzes.multiply(this.hitPercentages(quizzes));
     }
 
     private BigDecimal hitPercentages(List<Quiz> quizzes) {
         int totalQuizzes = quizzes.size();
         int totalHits = this.getTotalHits(quizzes);
 
-        double result = (totalHits/(double) totalQuizzes) * 100;
+        double result = (totalHits / (double) totalQuizzes) * 100;
 
         return BigDecimal.valueOf(result);
 
