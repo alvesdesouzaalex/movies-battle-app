@@ -3,13 +3,13 @@ package br.com.mb.moviesbattleapp.service;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizAttemptsResponse;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizBasic;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizDto;
+import br.com.mb.moviesbattleapp.exception.BusinessException;
 import br.com.mb.moviesbattleapp.fixture.MoviesFixture;
 import br.com.mb.moviesbattleapp.fixture.QuizFixture;
 import br.com.mb.moviesbattleapp.fixture.QuizRequestFixture;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.model.Quiz;
 import br.com.mb.moviesbattleapp.service.answer.QuizGameAnswerService;
-import br.com.mb.moviesbattleapp.service.movie.MovieService;
 import br.com.mb.moviesbattleapp.service.quiz.QuizService;
 import br.com.mb.moviesbattleapp.service.ranking.RankingService;
 import br.com.mb.moviesbattleapp.service.user.UserService;
@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -46,8 +47,6 @@ public class QuizGameAnswerServiceTest {
     @MockBean
     QuizService quizService;
     @MockBean
-    MovieService movieService;
-    @MockBean
     UserService userService;
     @MockBean
     RankingService rankingService;
@@ -64,9 +63,6 @@ public class QuizGameAnswerServiceTest {
 
         Movie movieWinner = MoviesFixture.movie("title1", quizDtoWinner.getImdbID(), "poster1", 8.2, 1);
 
-        when(movieService.findByImdbID(quizDtoWinner.getImdbID())).thenReturn(movieWinner);
-
-
         Quiz saved = QuizFixture.getQuiz(1, List.of(movieWinner), 0, true, BigDecimal.valueOf(8), 7);
         when(quizService.findById(quizBasic.getId())).thenReturn(saved);
 
@@ -76,6 +72,17 @@ public class QuizGameAnswerServiceTest {
         assertThat(response, hasProperty("status", equalTo("You win. Try a new Quiz.")));
         assertThat(response, hasProperty("failedAttempts", equalTo(saved.getAttempts())));
         assertThat(response, hasProperty("maxAttempts", equalTo(3)));
+    }
+
+
+    @Test(expected = BusinessException.class)
+    public void answerQuiz_Error_WhenMovieNotFound() {
+
+        QuizBasic quizBasic = QuizRequestFixture.quizRequest();
+        Quiz saved = QuizFixture.getQuiz(1, new ArrayList<>(), 0, true, BigDecimal.valueOf(8), 7);
+        when(quizService.findById(quizBasic.getId())).thenReturn(saved);
+        service.answerQuiz(quizBasic);
+
     }
 
 
@@ -89,9 +96,6 @@ public class QuizGameAnswerServiceTest {
                 .orElseThrow(RuntimeException::new);
 
         Movie movieWinner = MoviesFixture.movie("title1", quizDtoWinner.getImdbID(), "poster1", 8, 1);
-
-        when(movieService.findByImdbID(quizDtoWinner.getImdbID())).thenReturn(movieWinner);
-
 
         Quiz saved = QuizFixture.getQuiz(1, List.of(movieWinner), 0, true, BigDecimal.valueOf(8), 7);
         when(quizService.findById(quizBasic.getId())).thenReturn(saved);
@@ -115,8 +119,6 @@ public class QuizGameAnswerServiceTest {
                 .orElseThrow(RuntimeException::new);
 
         Movie movieWinner = MoviesFixture.movie("title1", quizDtoWinner.getImdbID(), "poster1", 8, 1);
-
-        when(movieService.findByImdbID(quizDtoWinner.getImdbID())).thenReturn(movieWinner);
 
 
         Quiz saved = QuizFixture.getQuiz(1, List.of(movieWinner), 0, false, BigDecimal.valueOf(8), 7);
@@ -142,9 +144,6 @@ public class QuizGameAnswerServiceTest {
 
         Movie movieWinner = MoviesFixture.movie("title1", quizDtoWinner.getImdbID(), "poster1", 8, 1);
 
-        when(movieService.findByImdbID(quizDtoWinner.getImdbID())).thenReturn(movieWinner);
-
-
         Quiz saved = QuizFixture.getQuiz(1, List.of(movieWinner), 2, true, BigDecimal.valueOf(8), 7);
         when(quizService.findById(quizBasic.getId())).thenReturn(saved);
 
@@ -166,9 +165,6 @@ public class QuizGameAnswerServiceTest {
                 .orElseThrow(RuntimeException::new);
 
         Movie movieWinner = MoviesFixture.movie("title1", quizDtoWinner.getImdbID(), "poster1", 8, 1);
-
-        when(movieService.findByImdbID(quizDtoWinner.getImdbID())).thenReturn(movieWinner);
-
 
         Quiz saved = QuizFixture.getQuiz(1, List.of(movieWinner), 0, false, BigDecimal.valueOf(8), 7);
         when(quizService.findById(quizBasic.getId())).thenReturn(saved);

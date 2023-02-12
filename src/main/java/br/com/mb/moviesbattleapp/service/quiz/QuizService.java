@@ -24,7 +24,7 @@ import java.util.List;
 import static br.com.mb.moviesbattleapp.exception.MessageErrors.QUIZ_NOT_FOUND;
 
 @Service
-public class QuizService {
+public class  QuizService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QuizService.class);
 

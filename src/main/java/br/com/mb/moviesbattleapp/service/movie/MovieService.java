@@ -15,7 +15,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
 @Component
 public class MovieService {
 
@@ -35,6 +39,7 @@ public class MovieService {
     public void init() {
         this.loadMovies(movies);
     }
+
     @Async
     public void loadMovies(List<String> movies) {
 
@@ -82,7 +87,6 @@ public class MovieService {
                     moviesToSave.add(movie);
 
                 });
-
 
         try {
             this.repository.saveAllAndFlush(moviesToSave);

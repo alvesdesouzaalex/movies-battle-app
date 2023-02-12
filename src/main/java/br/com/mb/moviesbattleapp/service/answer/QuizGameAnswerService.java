@@ -3,9 +3,9 @@ package br.com.mb.moviesbattleapp.service.answer;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizAttemptsResponse;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizBasic;
 import br.com.mb.moviesbattleapp.domain.quiz.QuizDto;
+import br.com.mb.moviesbattleapp.exception.BusinessException;
 import br.com.mb.moviesbattleapp.model.Movie;
 import br.com.mb.moviesbattleapp.model.Quiz;
-import br.com.mb.moviesbattleapp.service.movie.MovieService;
 import br.com.mb.moviesbattleapp.service.quiz.QuizService;
 import br.com.mb.moviesbattleapp.service.ranking.RankingService;
 import br.com.mb.moviesbattleapp.service.user.UserService;
@@ -16,14 +16,13 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.Objects;
 
+import static br.com.mb.moviesbattleapp.exception.MessageErrors.MOVIE_NOT_FOUND;
+
 @Service
 public class QuizGameAnswerService {
 
     @Autowired
     private QuizService quizService;
-
-    @Autowired
-    private MovieService movieService;
 
     @Autowired
     private UserService userService;
@@ -35,13 +34,11 @@ public class QuizGameAnswerService {
     public QuizAttemptsResponse answerQuiz(QuizBasic request) {
 
         QuizDto quizDtoWinner = request.getMovies().stream().max(Comparator.comparing(QuizDto::getRate)).orElseThrow(RuntimeException::new);
-//        Movie movieWinner = this.movieService.findByImdbID(quizDtoWinner.getImdbID());
-
         Quiz saved = this.quizService.findById(request.getId());
         Movie movieWinner = saved.getMovies()
                 .stream().filter(movie -> Objects.equals(movie.getImdbID(), quizDtoWinner.getImdbID()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("No movie found"));
+                .orElseThrow(() -> new BusinessException(MOVIE_NOT_FOUND));
 
 
         int attempts = saved.getAttempts();

@@ -75,7 +75,7 @@ public class MovieServiceTest {
 
         when(repository.countAllByType("movie")).thenReturn(0);
         when(omdbClient.getMovies(Mockito.any(), anyInt())).thenReturn(omdbResponse);
-        when(repository.saveAndFlush(any())).thenThrow(DataIntegrityViolationException.class);
+        when(repository.saveAllAndFlush(any())).thenThrow(DataIntegrityViolationException.class);
 
         service.loadMovies(moviesList);
         verify(repository, times(1)).saveAllAndFlush(any());
