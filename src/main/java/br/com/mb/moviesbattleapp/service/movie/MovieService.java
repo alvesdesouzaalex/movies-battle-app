@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -81,7 +82,7 @@ public class MovieService {
                             .title(searchDto.getTitle())
                             .type(searchDto.getType())
                             .year(searchDto.getYear())
-                            .rate(BigDecimal.valueOf(rate))
+                            .rate(BigDecimal.valueOf(rate).setScale(2, RoundingMode.HALF_UP))
                             .build();
 
                     moviesToSave.add(movie);
