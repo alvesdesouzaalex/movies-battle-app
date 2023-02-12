@@ -14,3 +14,4 @@ http://localhost:8080/v3/api-docs
 
 #### Apis to Test
 https://api.postman.com/collections/2562032-834a9a60-250e-49c4-8ee1-076a96c47ccc?access_key=PMAT-01GS39R06A8RPRX8FR1CXW3C0S
+* You need to import the ADA LOCAL ENV.postman_environment.json in your json to use the token replace, or you can do it manually
