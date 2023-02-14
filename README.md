@@ -23,3 +23,10 @@ https://api.postman.com/collections/2562032-834a9a60-250e-49c4-8ee1-076a96c47ccc
 * user3
 
 All them with 123456 passw
+
+
+#### Vefify sonnar
+mvn verify sonar:sonar -Dsonar.login=alvesdesouzaalex -Dsonar.projectKey=movies-battle-app -Dsonar.host.url=https://sonarcloud.io -Dsonar.password=Arroba30@50
+
+#### URl Sonar
+https://sonarcloud.io/organizations/alvesdesouzaalex/projects
